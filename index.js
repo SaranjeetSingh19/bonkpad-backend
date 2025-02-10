@@ -14,17 +14,22 @@ const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors({
+  origin: 'https://bonkpad-psi.vercel.app/'
+}));
+
+
 // Create HTTP server and Socket.IO instance
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'https://bonkpad-psi.vercel.app/',
     methods: ['GET', 'POST'],
   },
   maxHttpBufferSize: 1e8, // Allow larger files (100MB)
 });
 
-app.use(cors());
+//app.use(cors());
 app.use(express.json());
 
 // Store active users and their socket IDs
