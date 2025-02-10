@@ -14,36 +14,34 @@ const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Enable CORS with credentials
 const allowedOrigins = [
-  'https://bonkpad-psi.vercel.app', // Production frontend
-  'http://localhost:5173' // Local development
+  'https://bonkpad-psi.vercel.app',
+  'http://localhost:5173'
 ];
-
 
 
 // Update CORS middleware
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
 // Create HTTP server and Socket.IO instance
 const httpServer = createServer(app);
 
 
+// Socket.IO Configuration
 const io = new Server(httpServer, {
   cors: {
     origin: allowedOrigins,
-    methods: ["GET", "POST"]
+    methods: ["GET", "POST"],
+    credentials: true
   },
-  maxHttpBufferSize: 1e8, // Allow larger files (100MB)
+  transports: ['websocket', 'polling'] // Add this line
 });
+
 
 //app.use(cors());
 app.use(express.json());
